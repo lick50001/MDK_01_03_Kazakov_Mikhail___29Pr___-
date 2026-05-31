@@ -1,9 +1,26 @@
 package com.example.mvvm_klimov.datas.apis;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+
+import com.example.mvvm_klimov.R;
 import com.example.mvvm_klimov.datas.callbacks.MyResponseCallback;
+import com.example.mvvm_klimov.presentations.MainActivity;
+import com.yandex.mapkit.MapKitFactory;
+import com.yandex.mapkit.geometry.Point;
+import com.yandex.mapkit.layers.GeoObjectTapListener;
+import com.yandex.mapkit.map.CameraPosition;
+import com.yandex.mapkit.mapview.MapView;
+import com.yandex.runtime.image.ImageProvider;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;

@@ -68,6 +68,11 @@ public class DayViewModel extends ViewModel {
         return  Math.round(avgTemp);
     }
 
+    public void updateLocation(double lat, double lon) {
+        WeatherApi weatherApi = new WeatherApi(lat, lon, ResponseWeather);
+        weatherApi.execute();
+    }
+
     public String getDayOfWeek(String dateString) {
         LocalDate date = LocalDate.parse(dateString);
         return date.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("en"));
