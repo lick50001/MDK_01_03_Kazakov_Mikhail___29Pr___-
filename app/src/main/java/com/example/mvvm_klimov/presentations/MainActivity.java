@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     DayViewModel viewModel;
     DayAdapter adapter;
+    public static double lastLat = 58.0;
+    public static double lastLon = 56.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
 
                 double lat = location.getLatitude();
                 double lon = location.getLongitude();
+
+                lastLat = lat;
+                lastLon = lon;
+
                 viewModel.updateLocation(lat, lon);
             }
         };
