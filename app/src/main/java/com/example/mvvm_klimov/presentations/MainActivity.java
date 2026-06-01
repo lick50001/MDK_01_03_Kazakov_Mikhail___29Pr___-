@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         _context = new DbContext(this);
-        if (WeatherContext.allDays().isEmpty()) {
-            onStartWorkerNow();
-        }
+//        if (WeatherContext.allDays().isEmpty()) {
+//            onStartWorkerNow();
+//        }
         onStartWorker();
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     public void onStartWorker() {
         PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
                 WeatherWorker.class,
-                2, TimeUnit.MINUTES,
+                1, TimeUnit.MINUTES,
                 30, TimeUnit.SECONDS)
                 .build();
 
@@ -104,8 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 lastLat = lat;
                 lastLon = lon;
 
-                OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(WeatherWorker.class)
-                        .build();
+                OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(WeatherWorker.class).build();
                 WorkManager.getInstance(MainActivity.this).enqueue(workRequest);
             }
         };
