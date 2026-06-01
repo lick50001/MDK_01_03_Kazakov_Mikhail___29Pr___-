@@ -16,15 +16,24 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.mvvm_klimov.R;
 import com.example.mvvm_klimov.databinding.ActivityMainBinding;
 import com.example.mvvm_klimov.datas.apis.WeatherApi;
+import com.example.mvvm_klimov.datas.databases.DbContext;
+import com.example.mvvm_klimov.datas.databases.WeatherContext;
+import com.example.mvvm_klimov.datas.workers.WeatherWorker;
 import com.example.mvvm_klimov.viewmodels.DayViewModel;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+    DbContext _context;
     LocationManager locationManager;
     LocationListener locationListener;
     ActivityMainBinding binding;
@@ -38,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        _context = new DbContext(this);
+        if (WeatherContext.allDays().isEmpty()) {
+            onStartWorkerNow();
+        }
+        onStartWorker();
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         viewModel = new ViewModelProvider(this).get(DayViewModel.class);
@@ -56,6 +71,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onStartWorker() {
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
+                WeatherWorker.class,
+                2, TimeUnit.MINUTES,
+                30, TimeUnit.SECONDS)
+                .build();
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WORKER_MANAGER",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+        );
+    }
+
+    public void onStartWorkerNow() {
+        OneTimeWorkRequest immediateWork = new OneTimeWorkRequest.Builder(WeatherWorker.class)
+                .build();
+        WorkManager.getInstance(this).enqueue(immediateWork);
+    }
+
     private void startLocationUpdates() {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -69,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
                 lastLat = lat;
                 lastLon = lon;
 
-                viewModel.updateLocation(lat, lon);
+                OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(WeatherWorker.class)
+                        .build();
+                WorkManager.getInstance(MainActivity.this).enqueue(workRequest);
             }
         };
 

@@ -1,5 +1,8 @@
 package com.example.mvvm_klimov.viewmodels;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -7,7 +10,9 @@ import androidx.lifecycle.ViewModel;
 import com.example.mvvm_klimov.datas.apis.WeatherApi;
 import com.example.mvvm_klimov.datas.apis.WeatherResponse;
 import com.example.mvvm_klimov.datas.callbacks.MyResponseCallback;
+import com.example.mvvm_klimov.datas.databases.WeatherContext;
 import com.example.mvvm_klimov.domains.models.Day;
+import com.example.mvvm_klimov.presentations.utils.DataNotifier;
 import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
@@ -27,76 +32,21 @@ public class DayViewModel extends ViewModel {
     public LiveData<String> condition = _condition;
 
     public DayViewModel() {
-        WeatherApi weatherApi = new WeatherApi(58, 56, ResponseWeather);
-        weatherApi.execute();
+        loadDays();
+        DataNotifier.getInstance().subscribe(this::loadDays);
     }
 
-    MyResponseCallback ResponseWeather = new MyResponseCallback() {
-        @Override
-        public void onCompile(String result) {
-            List<Day> dayList = new ArrayList<>();
+    public void loadDays() {
+        new Thread(() -> {
+            List<Day> days = WeatherContext.allDays();
 
-            WeatherResponse weatherResponse = new GsonBuilder().create().fromJson(
-                    result,
-                    WeatherResponse.class
-            );
-
-            for (WeatherResponse.Forecast forecast : weatherResponse.forecasts) {
-                if (forecast.hours.isEmpty()) continue;
-                Integer avgTemp = avgTemp(forecast.hours);
-                String nameDay = getDayOfWeek(forecast.date);
-                String condition = getDayCondition(forecast.hours);
-                Day day = new Day(nameDay, avgTemp, condition);
-                dayList.add(day);
-            }
-
-            _days.setValue(dayList);
-            _nowTemp.setValue(weatherResponse.fact.temp + "°");
-            _condition.setValue(weatherResponse.fact.condition);
-        }
-
-        @Override
-        public void onError(String error) {}
-    };
-
-    public Integer avgTemp(List<WeatherResponse.Forecast.Hour> hours) {
-        Float sumTemp = 0f;
-        for (WeatherResponse.Forecast.Hour hour : hours) {
-            sumTemp += hour.temp;
-        }
-        Float avgTemp = sumTemp / hours.size();
-        return  Math.round(avgTemp);
-    }
-
-    public void updateLocation(double lat, double lon) {
-        WeatherApi weatherApi = new WeatherApi(lat, lon, ResponseWeather);
-        weatherApi.execute();
-    }
-
-    public String getDayOfWeek(String dateString) {
-        LocalDate date = LocalDate.parse(dateString);
-        return date.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("en"));
-    }
-
-    public String getDayCondition(List<WeatherResponse.Forecast.Hour> hours) {
-        Map<String, Integer> conditionCount = new HashMap<>();
-
-        for (WeatherResponse.Forecast.Hour hour : hours) {
-            if (hour.condition != null && !hour.condition.isEmpty()) {
-                conditionCount.put(hour.condition,
-                        conditionCount.getOrDefault(hour.condition, 0) + 1);
-            }
-        }
-
-        String mostFrequentCondition = null;
-        int maxCount = 0;
-
-        for (Map.Entry<String, Integer> entry : conditionCount.entrySet()) {
-            if (entry.getValue() > maxCount) {
-                maxCount = entry.getValue();
-                mostFrequentCondition = entry.getKey();
-            }
-        }
-        return mostFrequentCondition;
+            new Handler(Looper.getMainLooper()).post(() -> {
+                _days.setValue(days);
+                if (days.isEmpty() == false) {
+                    _nowTemp.setValue(days.get(0).Temp + "°");
+                    _condition.setValue(days.get(0).Condition);
+                }
+            });
+        }).start();
     }
 }
