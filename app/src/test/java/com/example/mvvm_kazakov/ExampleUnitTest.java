@@ -1,4 +1,4 @@
-package com.example.mvvm_klimov;
+package com.example.mvvm_kazakov;
 
 import org.junit.Test;
 

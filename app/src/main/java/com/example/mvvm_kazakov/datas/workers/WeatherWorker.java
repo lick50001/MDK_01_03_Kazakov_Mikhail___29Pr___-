@@ -1,22 +1,17 @@
-package com.example.mvvm_klimov.datas.workers;
+package com.example.mvvm_kazakov.datas.workers;
 
 import android.content.Context;
 import android.util.Log;
-
+import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-
-import androidx.annotation.NonNull;
-
-import com.example.mvvm_klimov.datas.apis.WeatherApi;
-import com.example.mvvm_klimov.datas.apis.WeatherResponse;
-import com.example.mvvm_klimov.datas.callbacks.MyResponseCallback;
-import com.example.mvvm_klimov.datas.databases.WeatherContext;
-import com.example.mvvm_klimov.domains.models.Day;
-import com.example.mvvm_klimov.presentations.MainActivity;
-import com.example.mvvm_klimov.presentations.utils.DataNotifier;
+import com.example.mvvm_kazakov.datas.databases.WeatherContext;
+import com.example.mvvm_kazakov.datas.apis.WeatherApi;
+import com.example.mvvm_kazakov.datas.apis.WeatherResponse;
+import com.example.mvvm_kazakov.datas.callbacks.MyResponseCallback;
+import com.example.mvvm_kazakov.domains.models.Day;
+import com.example.mvvm_kazakov.presentations.utils.DataNotifier;
 import com.google.gson.GsonBuilder;
-
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -31,8 +26,8 @@ public class WeatherWorker extends Worker {
     String TAG = "WeatherWorker";
     CountDownLatch _latch = new CountDownLatch(1);
 
-    public WeatherWorker(@NonNull Context context, @NonNull WorkerParameters workerParameters) {
-        super(context, workerParameters);
+    public WeatherWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
     }
 
     @NonNull
@@ -40,35 +35,25 @@ public class WeatherWorker extends Worker {
     public Result doWork() {
         Log.d(TAG, "Выполнение запроса получения погоды");
         try {
-            double lat = MainActivity.lastLat;
-            double lon = MainActivity.lastLon;
-
-            WeatherApi weatherApi = new WeatherApi(lat, lon, ResponseWeather);
+            WeatherApi weatherApi = new WeatherApi(58, 56, ResponseWeather);
             weatherApi.execute();
             boolean completed = _latch.await(30, TimeUnit.SECONDS);
-
             if (!completed) {
                 Log.e(TAG, "Request failed");
                 return Result.failure();
             }
-            else {
-                DataNotifier.getInstance().notifyUpdate();
-                return Result.success();
-            }
         } catch (InterruptedException e) {
             return Result.failure();
         }
+        DataNotifier.getInstance().notifyUpdate();
+        return Result.success();
     }
 
     MyResponseCallback ResponseWeather = new MyResponseCallback() {
         @Override
         public void onCompile(String result) {
             List<Day> daysList = new ArrayList<>();
-
-            WeatherResponse weatherResponse = new GsonBuilder().create().fromJson(
-                    result,
-                    WeatherResponse.class
-            );
+            WeatherResponse weatherResponse = new GsonBuilder().create().fromJson(result, WeatherResponse.class);
 
             for (WeatherResponse.Forecast forecast : weatherResponse.forecasts) {
                 if (forecast.hours.isEmpty()) continue;
@@ -84,16 +69,16 @@ public class WeatherWorker extends Worker {
         }
 
         @Override
-        public void onError(String error) {}
+        public void onError(String error) {
+        }
     };
 
     public Integer avgTemp(List<WeatherResponse.Forecast.Hour> hours) {
         Float sumTemp = 0f;
-        for (WeatherResponse.Forecast.Hour hour : hours) {
+        for (WeatherResponse.Forecast.Hour hour : hours)
             sumTemp += hour.temp;
-        }
         Float avgTemp = sumTemp / hours.size();
-        return  Math.round(avgTemp);
+        return Math.round(avgTemp);
     }
 
     public String getDayOfWeek(String dateString) {
@@ -103,11 +88,9 @@ public class WeatherWorker extends Worker {
 
     public String getDayCondition(List<WeatherResponse.Forecast.Hour> hours) {
         Map<String, Integer> conditionCount = new HashMap<>();
-
         for (WeatherResponse.Forecast.Hour hour : hours) {
             if (hour.condition != null && !hour.condition.isEmpty()) {
-                conditionCount.put(hour.condition,
-                        conditionCount.getOrDefault(hour.condition, 0) + 1);
+                conditionCount.put(hour.condition, conditionCount.getOrDefault(hour.condition, 0) + 1);
             }
         }
 
@@ -120,6 +103,7 @@ public class WeatherWorker extends Worker {
                 mostFrequentCondition = entry.getKey();
             }
         }
+
         return mostFrequentCondition;
     }
 }

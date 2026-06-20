@@ -1,16 +1,13 @@
-package com.example.mvvm_klimov.presentations;
+package com.example.mvvm_kazakov.presentations;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.mvvm_klimov.R;
-import com.example.mvvm_klimov.databinding.ItemDayBinding;
-import com.example.mvvm_klimov.domains.models.Day;
-
+import com.example.mvvm_kazakov.R;
+import com.example.mvvm_kazakov.databinding.ItemDayBinding;
+import com.example.mvvm_kazakov.domains.models.Day;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +16,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
 
     @NonNull
     @Override
-    public DayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DayAdapter.DayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemDayBinding binding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.getContext()),
                 R.layout.item_day,
@@ -30,7 +27,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DayAdapter.DayViewHolder holder, int position) {
         Day day = days.get(position);
         holder.bind(day);
     }
@@ -41,16 +38,15 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     }
 
     public void setDays(List<Day> days) {
-        if (days == null) {
+        if (days == null)
             this.days = new ArrayList<>();
-        } else {
+        else
             this.days = days;
-        }
         notifyDataSetChanged();
     }
 
     static class DayViewHolder extends RecyclerView.ViewHolder {
-        ItemDayBinding binding;
+        final ItemDayBinding binding;
 
         public DayViewHolder(ItemDayBinding binding) {
             super(binding.getRoot());

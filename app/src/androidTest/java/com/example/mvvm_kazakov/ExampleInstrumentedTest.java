@@ -1,4 +1,4 @@
-package com.example.mvvm_klimov;
+package com.example.mvvm_kazakov;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.mvvm_klimov", appContext.getPackageName());
+        assertEquals("com.example.mvvm_kazakov", appContext.getPackageName());
     }
 }

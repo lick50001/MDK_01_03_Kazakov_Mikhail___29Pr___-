@@ -1,4 +1,4 @@
-package com.example.mvvm_klimov.presentations.utils;
+package com.example.mvvm_kazakov.presentations.utils;
 
 import java.util.ArrayList;
 import java.util.List;

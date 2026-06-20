@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".presentations.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="viewModel"
-            type="com.example.mvvm_klimov.viewmodels.DayViewModel" />
+            type="com.example.mvvm_kazakov.viewmodels.DayViewModel" />
     </data>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -27,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="9" />
+            tools:text="9°"/>
 
         <TextView
             android:id="@+id/textView2"
@@ -35,15 +35,15 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_light"
             android:text="@{viewModel.condition}"
+            tools:text="Холодно"
             android:textColor="@color/white"
             android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            tools:text="Холодно" />
+            app:layout_constraintTop_toBottomOf="@+id/textView"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleView"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginLeft="30dp"
@@ -56,5 +56,4 @@
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

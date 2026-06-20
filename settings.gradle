@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MVVM_Klimov"
+rootProject.name = "MVVM_kazakov"
 include ':app'

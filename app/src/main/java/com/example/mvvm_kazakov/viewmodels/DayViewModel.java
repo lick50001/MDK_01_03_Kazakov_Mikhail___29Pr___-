@@ -1,4 +1,4 @@
-package com.example.mvvm_klimov.viewmodels;
+package com.example.mvvm_kazakov.viewmodels;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -6,22 +6,10 @@ import android.os.Looper;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-import com.example.mvvm_klimov.datas.apis.WeatherApi;
-import com.example.mvvm_klimov.datas.apis.WeatherResponse;
-import com.example.mvvm_klimov.datas.callbacks.MyResponseCallback;
-import com.example.mvvm_klimov.datas.databases.WeatherContext;
-import com.example.mvvm_klimov.domains.models.Day;
-import com.example.mvvm_klimov.presentations.utils.DataNotifier;
-import com.google.gson.GsonBuilder;
-
-import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.example.mvvm_kazakov.datas.databases.WeatherContext;
+import com.example.mvvm_kazakov.domains.models.Day;
+import com.example.mvvm_kazakov.presentations.utils.DataNotifier;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 public class DayViewModel extends ViewModel {
     MutableLiveData<List<Day>> _days = new MutableLiveData<>();

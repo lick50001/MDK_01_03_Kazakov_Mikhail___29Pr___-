@@ -1,4 +1,4 @@
-package com.example.mvvm_klimov.datas.callbacks;
+package com.example.mvvm_kazakov.datas.callbacks;
 
 public interface MyResponseCallback {
     void onCompile(String result);
