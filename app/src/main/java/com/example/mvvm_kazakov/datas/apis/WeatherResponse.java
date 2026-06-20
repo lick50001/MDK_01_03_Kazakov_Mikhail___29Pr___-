@@ -8,7 +8,6 @@ public class WeatherResponse {
     public class Forecast {
         public String date;
         public ArrayList<Hour> hours;
-
         public class Hour {
             public String hour;
             public Integer temp;

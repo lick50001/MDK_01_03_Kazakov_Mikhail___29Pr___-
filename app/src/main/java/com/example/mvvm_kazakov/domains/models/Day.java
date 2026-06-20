@@ -9,6 +9,7 @@ public class Day {
         this.Temp = temp;
         this.Condition = condition;
     }
+
     public String getTemp(){
         return this.Temp + "°";
     }

@@ -10,6 +10,7 @@ import java.util.List;
 public class BindingAdapters {
     @BindingAdapter("app:days")
 
+
     public static void setDays(RecyclerView recyclerView, List<Day> days){
         if(recyclerView.getAdapter() instanceof DayAdapter){
             DayAdapter adapter = (DayAdapter) recyclerView.getAdapter();

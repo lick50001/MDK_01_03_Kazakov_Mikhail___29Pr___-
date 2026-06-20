@@ -15,7 +15,6 @@ public class WeatherApi extends AsyncTask<Void, Void, String> {
         this.url = "https://api.weather.yandex.ru/v2/forecast?lat=" + lat + "&lon=" + lon;
         this.callback = callback;
     }
-
     @Override
     protected String doInBackground(Void... voids) {
         try {

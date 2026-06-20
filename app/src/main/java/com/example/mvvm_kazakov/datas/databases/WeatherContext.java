@@ -25,6 +25,8 @@ public class WeatherContext {
         cursor.close();
         return days;
     }
+
+
     public static void Save(List<Day> days){
         DBContext.sqLiteDatabase.delete("Days", null, null);
         for(Day day: days){

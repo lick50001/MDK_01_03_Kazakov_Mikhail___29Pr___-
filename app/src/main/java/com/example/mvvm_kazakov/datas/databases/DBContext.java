@@ -10,6 +10,7 @@ public class DBContext extends SQLiteOpenHelper {
         super(context,"DBWeather",null,1);
         sqLiteDatabase = this.getWritableDatabase();
     }
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase){
         sqLiteDatabase.execSQL(
